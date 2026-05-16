@@ -22,118 +22,108 @@
   margin-top: var(--space-xs);
 }
 
-/* 月度支出卡片 */
-.summaryCard {
-  margin-bottom: var(--space-md);
-  background: linear-gradient(135deg, #f5f0eb 0%, #ede4db 100%);
-}
-
-.summaryLabel {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-}
-
-.summaryAmount {
-  font-size: var(--font-size-2xl);
-  font-weight: 700;
-  color: var(--color-expense);
-  margin: var(--space-xs) 0;
-  font-variant-numeric: tabular-nums;
-}
-
-.budgetBar {
-  height: 6px;
-  background: #e8e0d8;
-  border-radius: var(--radius-full);
-  margin: var(--space-sm) 0;
-  overflow: hidden;
-}
-
-.budgetFill {
-  height: 100%;
-  background: var(--color-sage);
-  border-radius: var(--radius-full);
-  transition: width var(--transition-slow);
-}
-
-.budgetText {
-  font-size: var(--font-size-xs);
-  color: var(--text-hint);
-}
-
 /* 资产概览 */
 .assetCard {
   margin-bottom: var(--space-md);
 }
 
-.sectionTitle {
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  margin-bottom: var(--space-sm);
+.assetHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
 }
 
-.totalAsset {
-  font-size: var(--font-size-xl);
-  font-weight: 700;
-  color: var(--color-income);
-  font-variant-numeric: tabular-nums;
+.sectionTitle {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.assetAddBtn {
+  font-size: var(--font-size-xs);
+  color: var(--color-sage);
+  font-weight: 600;
 }
 
 .assetHint {
   font-size: var(--font-size-xs);
   color: var(--text-hint);
-  margin-top: var(--space-xs);
+  text-align: center;
+  padding: var(--space-md) 0;
 }
 
-/* 最近流水 */
-.recentSection {
+/* 总金额行 */
+.totalRow {
+  display: flex;
+  gap: var(--space-lg);
   margin-bottom: var(--space-lg);
 }
 
-.emptyState {
-  text-align: center;
-  padding: var(--space-xl) var(--space-md);
-  color: var(--text-secondary);
+.totalItem {
+  flex: 1;
 }
 
-.emptyHint {
+.totalLabel {
   font-size: var(--font-size-xs);
   color: var(--text-hint);
-  margin-top: var(--space-xs);
+  margin-bottom: 2px;
 }
 
-.assetList {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-xs);
-  margin-top: var(--space-sm);
+.totalValue {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
 }
 
-.assetItem {
+/* 账户分组 */
+.assetGroup {
+  margin-bottom: var(--space-md);
+}
+
+.assetGroup:last-child {
+  margin-bottom: 0;
+}
+
+.currencyLabel {
   font-size: var(--font-size-xs);
-  color: var(--text-secondary);
-  background: rgba(163, 181, 166, 0.08);
-  padding: 2px var(--space-sm);
-  border-radius: var(--radius-full);
+  color: var(--text-hint);
+  font-weight: 500;
+  margin-bottom: var(--space-xs);
+  padding-bottom: var(--space-xs);
+  border-bottom: 1px solid #f0ebe8;
 }
 
-.expenseList {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.assetHeader, .recentHeader {
+/* 单个账户行 */
+.accountRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-sm);
-}
-
-.assetAddBtn, .viewAll {
-  font-size: var(--font-size-xs);
-  color: var(--color-sage);
-  font-weight: 600;
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+  cursor: pointer;
   transition: opacity var(--transition-fast);
 }
-.assetAddBtn:active, .viewAll:active { opacity: 0.7; }
+.accountRow:active {
+  opacity: 0.6;
+}
+
+.accountIcon {
+  font-size: 22px;
+  width: 32px;
+  text-align: center;
+}
+
+.accountName {
+  flex: 1;
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.accountBalance {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}

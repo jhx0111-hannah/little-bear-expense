@@ -78,8 +78,8 @@ export default function ExpenseEditModal({ expense, onClose, onUpdate, onDelete 
           </div>
           <div className={styles.field}>
             <label>日期</label>
-            <input className="input" type="date" value={date}
-              onChange={(e) => setDate(e.target.value)} style={{ width: '100%' }} />
+            <input className={styles.dateInput} type="date" value={date}
+              onChange={(e) => setDate(e.target.value)} />
           </div>
           <div className={styles.field}>
             <label>账户 ({expense.type === 'expense' ? '扣款' : '入账'})</label>

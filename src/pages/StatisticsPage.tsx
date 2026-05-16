@@ -6,21 +6,13 @@ import type { Expense } from '../types/expense';
 import { formatCurrency } from '../utils/formatCurrency';
 import styles from './StatisticsPage.module.css';
 
-type RangeType = 'week' | 'month' | 'year';
+type RangeType = 'month' | 'year';
 
 const PIE_COLORS = ['#c4a8a8', '#b5a9b0', '#a8b5c4', '#b5c4b1', '#d4c9b8', '#a3b5a6', '#b5a08a', '#d4b8b8'];
 const INCOME_COLORS = ['#a3b5a6', '#b5c4b1', '#a8b5c4', '#d4c9b8', '#b5a9b0', '#b5a08a', '#c4a8a8', '#d4b8b8'];
 
 function getDateRange(type: RangeType, offset: number): { from: string; to: string } {
   const now = new Date();
-  if (type === 'week') {
-    const day = now.getDay();
-    const monday = new Date(now);
-    monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1) - offset * 7);
-    const sunday = new Date(monday);
-    sunday.setDate(monday.getDate() + 6);
-    return { from: monday.toISOString().slice(0, 10), to: sunday.toISOString().slice(0, 10) };
-  }
   if (type === 'month') {
     const y = now.getFullYear();
     const m = now.getMonth() - offset;
@@ -117,7 +109,6 @@ export default function StatisticsPage() {
   }), [dailyDetail]);
 
   const rangeLabel = rangeType === 'month' ? getMonthLabel(monthOffset)
-    : rangeType === 'week' ? `${range.from} ~ ${range.to}`
     : `${range.from.slice(0, 4)}年`;
 
   return (
@@ -126,11 +117,11 @@ export default function StatisticsPage() {
 
       <div className={styles.rangeBar}>
         <div className={styles.rangeToggle}>
-          {(['week', 'month', 'year'] as RangeType[]).map((t) => (
+          {(['month', 'year'] as RangeType[]).map((t) => (
             <button key={t}
               className={`${styles.rangeBtn} ${rangeType === t ? styles.rangeBtnActive : ''}`}
               onClick={() => { setRangeType(t); setMonthOffset(0); }}
-            >{t === 'week' ? '周' : t === 'month' ? '月' : '年'}</button>
+            >{t === 'month' ? '月' : '年'}</button>
           ))}
         </div>
         {(rangeType === 'month') && (
