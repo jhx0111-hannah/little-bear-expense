@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useExpenses } from '../hooks/useExpenses';
 import BearIcon from '../components/common/BearIcon';
+import AssetEditModal from '../components/asset/AssetEditModal';
+import type { Asset } from '../types/asset';
 import styles from './DashboardPage.module.css';
 
 function getGreeting(): string {
@@ -14,7 +16,8 @@ function getGreeting(): string {
 
 export default function DashboardPage() {
   const navigate = useNavigate();
-  const { expenses, assets, loadInitial } = useExpenses();
+  const { assets, loadInitial } = useExpenses();
+  const [editingAsset, setEditingAsset] = useState<Asset | null>(null);
 
   useEffect(() => { loadInitial(); }, [loadInitial]);
 
@@ -70,7 +73,7 @@ export default function DashboardPage() {
                 <p className={styles.currencyLabel}>欧元账户</p>
                 {eurAssets.map((a) => (
                   <div key={a.id} className={styles.accountRow}
-                    onClick={() => navigate('/assets')}>
+                    onClick={() => setEditingAsset(a)}>
                     <span className={styles.accountIcon}>{a.icon}</span>
                     <span className={styles.accountName}>{a.name}</span>
                     <span className={styles.accountBalance}>€{Number(a.balance).toFixed(2)}</span>
@@ -85,7 +88,7 @@ export default function DashboardPage() {
                 <p className={styles.currencyLabel}>人民币账户</p>
                 {cnyAssets.map((a) => (
                   <div key={a.id} className={styles.accountRow}
-                    onClick={() => navigate('/assets')}>
+                    onClick={() => setEditingAsset(a)}>
                     <span className={styles.accountIcon}>{a.icon}</span>
                     <span className={styles.accountName}>{a.name}</span>
                     <span className={styles.accountBalance}>¥{Number(a.balance).toFixed(2)}</span>
@@ -96,6 +99,10 @@ export default function DashboardPage() {
           </>
         )}
       </div>
+
+      {editingAsset && (
+        <AssetEditModal asset={editingAsset} onClose={() => setEditingAsset(null)} />
+      )}
     </div>
   );
 }
