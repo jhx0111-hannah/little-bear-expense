@@ -2,6 +2,10 @@
   padding: var(--space-md);
   padding-bottom: var(--space-xl);
   animation: fade-in-up var(--transition-normal);
+  overflow-x: hidden;
+  max-width: 100vw;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 
 .title {

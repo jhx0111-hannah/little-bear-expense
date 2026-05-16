@@ -13,7 +13,8 @@ export default function AddExpensePage() {
   const { categories, assets, addExpense, loadInitial } = useExpenses();
   const screenshotAI = useScreenshotAI();
   const voice = useVoiceInput();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
+  const galleryRef = useRef<HTMLInputElement>(null);
 
   const [type, setType] = useState<TransactionType>('expense');
   const [amount, setAmount] = useState('');
@@ -31,14 +32,12 @@ export default function AddExpensePage() {
     if (categories.length === 0) loadInitial();
   }, [categories.length, loadInitial]);
 
-  // 截图识别完成 → 自动填表
   useEffect(() => {
     if (screenshotAI.stage === 'done' && screenshotAI.result) {
       applyAIResult(screenshotAI.result);
     }
   }, [screenshotAI.stage, screenshotAI.result]);
 
-  // 语音识别到文字 → 调用AI解析
   useEffect(() => {
     if (voice.transcript && !voice.isListening) {
       parseVoiceText(voice.transcript);
@@ -73,15 +72,18 @@ export default function AddExpensePage() {
       applyAIResult(data as AIRecognitionResult);
       if (data?.type === 'income') setType('income');
     } catch (err: any) {
-      setError(`语音解析失败：${err.message}`);
+      // Edge Function 未部署时给出友好提示
+      if (err.message?.includes('Failed to fetch') || err.message?.includes('fetch')) {
+        setError('语音解析功能需要部署AI服务，目前请手动填写。你说的文字：「' + text + '」');
+      } else {
+        setError(err.message);
+      }
     }
   };
 
   const handleScreenshot = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    // 预览
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
     screenshotAI.reset();
@@ -119,24 +121,26 @@ export default function AddExpensePage() {
 
       {/* ===== AI 智能输入区 ===== */}
       <div className={styles.aiBar}>
-        {/* 截图识别 */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          capture="environment"
-          onChange={handleScreenshot}
-          style={{ display: 'none' }}
-        />
-        <button
-          type="button"
-          className={`${styles.aiBtn} ${screenshotAI.stage === 'recognizing' ? styles.aiBtnActive : ''}`}
-          onClick={() => fileInputRef.current?.click()}
-          disabled={screenshotAI.stage === 'recognizing' || screenshotAI.stage === 'uploading'}
-        >
+        {/* 相册 */}
+        <input ref={galleryRef} type="file" accept="image/*"
+          onChange={handleScreenshot} style={{ display: 'none' }} />
+        {/* 拍照 */}
+        <input ref={cameraRef} type="file" accept="image/*"
+          capture="environment" onChange={handleScreenshot} style={{ display: 'none' }} />
+
+        <button type="button"
+          className={`${styles.aiBtn} ${screenshotAI.stage === 'recognizing' || screenshotAI.stage === 'uploading' ? styles.aiBtnActive : ''}`}
+          onClick={() => galleryRef.current?.click()}
+          disabled={screenshotAI.stage !== 'idle' && screenshotAI.stage !== 'error'}>
           {screenshotAI.stage === 'recognizing' ? '🔍 识别中...'
             : screenshotAI.stage === 'uploading' ? '📤 上传中...'
-            : '📷 截图识别'}
+            : '🖼️ 相册识别'}
+        </button>
+
+        <button type="button"
+          className={styles.aiBtn}
+          onClick={() => cameraRef.current?.click()}>
+          📷 拍照
         </button>
 
         {/* 语音记账 */}
@@ -144,12 +148,9 @@ export default function AddExpensePage() {
           <button
             type="button"
             className={`${styles.aiBtn} ${voice.isListening ? styles.voiceActive : ''}`}
-            onMouseDown={voice.start}
-            onMouseUp={voice.stop}
-            onTouchStart={voice.start}
-            onTouchEnd={voice.stop}
+            onClick={voice.isListening ? voice.stop : voice.start}
           >
-            {voice.isListening ? '🎤 正在听...' : '🎤 语音记账'}
+            {voice.isListening ? '🎤 停止' : '🎤 语音'}
           </button>
         )}
       </div>
@@ -158,7 +159,7 @@ export default function AddExpensePage() {
       {(screenshotAI.stage === 'recognizing' || voice.isListening) && (
         <div className={styles.aiStatus}>
           {screenshotAI.stage === 'recognizing' && '小熊正在识别截图中...'}
-          {voice.isListening && '小熊竖起耳朵在听...'}
+          {voice.isListening && '小熊竖起耳朵在听...请说话'}
         </div>
       )}
       {screenshotAI.error && <p className={styles.error}>{screenshotAI.error}</p>}
@@ -180,16 +181,12 @@ export default function AddExpensePage() {
       <form onSubmit={handleSubmit}>
         {/* 类型切换 */}
         <div className={styles.typeToggle}>
-          <button
-            type="button"
+          <button type="button"
             className={`${styles.typeBtn} ${type === 'expense' ? styles.typeActive : ''}`}
-            onClick={() => { setType('expense'); setCategoryId(null); }}
-          >支出</button>
-          <button
-            type="button"
+            onClick={() => { setType('expense'); setCategoryId(null); }}>支出</button>
+          <button type="button"
             className={`${styles.typeBtn} ${type === 'income' ? styles.typeIncomeActive : ''}`}
-            onClick={() => { setType('income'); setCategoryId(null); }}
-          >收入</button>
+            onClick={() => { setType('income'); setCategoryId(null); }}>收入</button>
         </div>
 
         {/* 金额 */}
@@ -204,18 +201,14 @@ export default function AddExpensePage() {
             />
           </div>
           <button type="button" className={styles.currencyBtn}
-            onClick={() => setCurrency(currency === 'CNY' ? 'EUR' : 'CNY')}
-          >{currency}</button>
+            onClick={() => setCurrency(currency === 'CNY' ? 'EUR' : 'CNY')}>{currency}</button>
         </div>
 
         {/* 分类 */}
         <div className={styles.section}>
           <p className={styles.sectionLabel}>分类</p>
-          <CategoryPicker
-            categories={filteredCategories}
-            selectedId={categoryId}
-            onSelect={(id) => { setCategoryId(id); setError(''); }}
-          />
+          <CategoryPicker categories={filteredCategories} selectedId={categoryId}
+            onSelect={(id) => { setCategoryId(id); setError(''); }} />
         </div>
 
         {/* 日期 */}
