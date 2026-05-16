@@ -1,3 +1,35 @@
+.wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--color-danger);
+}
+
+/* 底层删除按钮 */
+.deleteBtn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 72px;
+  background: var(--color-danger);
+  color: white;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.deleteVisible {
+  opacity: 1;
+}
+
+/* 卡片主体 */
 .card {
   display: flex;
   align-items: center;
@@ -6,10 +38,17 @@
   background: var(--bg-card);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background var(--transition-fast);
+  transition: transform 0.25s ease, background var(--transition-fast);
   -webkit-tap-highlight-color: transparent;
   min-height: 56px;
+  position: relative;
+  z-index: 1;
 }
+
+.swiped {
+  transform: translateX(-72px);
+}
+
 .card:active {
   background: #f5f0eb;
 }
@@ -24,12 +63,16 @@
 .info {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
 }
 
 .name {
   font-size: var(--font-size-base);
   font-weight: 500;
   color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .merchant {
@@ -40,6 +83,9 @@
 .date {
   font-size: var(--font-size-xs);
   color: var(--text-hint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .asset {
@@ -51,6 +97,7 @@
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .expense {

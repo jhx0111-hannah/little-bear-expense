@@ -17,6 +17,8 @@
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   padding: var(--space-md) var(--space-md) calc(var(--space-md) + var(--safe-bottom));
   overflow-y: auto;
+  overflow-x: hidden;
+  touch-action: pan-y;
   animation: fade-in-up 0.25s ease;
 }
 
@@ -55,6 +57,11 @@
   font-weight: 500;
   color: var(--text-hint);
   margin-bottom: var(--space-xs);
+}
+
+.field :global(.input) {
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .error {

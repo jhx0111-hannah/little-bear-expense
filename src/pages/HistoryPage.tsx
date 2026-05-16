@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { fetchRangeExpenses } from '../services/api/expenses';
+import { fetchRangeExpenses, deleteExpense } from '../services/api/expenses';
 import { useAuth } from '../hooks/useAuth';
 import type { Expense } from '../types/expense';
 import ExpenseCard from '../components/expense/ExpenseCard';
@@ -74,7 +74,12 @@ export default function HistoryPage() {
       ) : (
         <div className={styles.list}>
           {filtered.map((e) => (
-            <ExpenseCard key={e.id} expense={e} onClick={() => setEditingExpense(e)} />
+            <ExpenseCard key={e.id} expense={e}
+              onClick={() => setEditingExpense(e)}
+              onDelete={() => {
+                if (!user || !confirm('确定删除？')) return;
+                deleteExpense(e.id, user.id).then(fetchData);
+              }} />
           ))}
         </div>
       )}
