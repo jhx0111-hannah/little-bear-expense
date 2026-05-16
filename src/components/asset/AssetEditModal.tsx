@@ -3,7 +3,6 @@ import type { Asset } from '../../types/asset';
 import { useExpenses } from '../../hooks/useExpenses';
 import { updateAsset, deleteAsset } from '../../services/api/assets';
 import { useAuth } from '../../hooks/useAuth';
-import { formatCurrency } from '../../utils/formatCurrency';
 import styles from './AssetEditModal.module.css';
 
 interface Props {
