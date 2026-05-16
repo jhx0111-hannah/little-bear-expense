@@ -13,8 +13,7 @@ export default function AddExpensePage() {
   const { categories, assets, addExpense, loadInitial } = useExpenses();
   const screenshotAI = useScreenshotAI();
   const voice = useVoiceInput();
-  const cameraRef = useRef<HTMLInputElement>(null);
-  const galleryRef = useRef<HTMLInputElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const [type, setType] = useState<TransactionType>('expense');
   const [amount, setAmount] = useState('');
@@ -67,14 +66,20 @@ export default function AddExpensePage() {
       const { data, error: fnErr } = await supabase.functions.invoke('ai-recognize', {
         body: { text, mode: 'voice' },
       });
-      if (fnErr) throw fnErr;
+      if (fnErr) {
+        if (fnErr.message?.includes('non-2xx') || fnErr.message?.includes('status code')) {
+          setError('AI服务未部署，语音解析暂不可用。你说的文字：「' + text + '」');
+        } else {
+          setError(fnErr.message);
+        }
+        return;
+      }
       if (data?.error) throw new Error(data.error);
       applyAIResult(data as AIRecognitionResult);
       if (data?.type === 'income') setType('income');
     } catch (err: any) {
-      // Edge Function 未部署时给出友好提示
       if (err.message?.includes('Failed to fetch') || err.message?.includes('fetch')) {
-        setError('语音解析功能需要部署AI服务，目前请手动填写。你说的文字：「' + text + '」');
+        setError('语音解析功能需要部署AI服务。你说的文字：「' + text + '」');
       } else {
         setError(err.message);
       }
@@ -119,43 +124,29 @@ export default function AddExpensePage() {
     <div className={styles.page}>
       <h1 className={styles.title}>记一笔</h1>
 
-      {/* ===== AI 智能输入区 ===== */}
+      {/* AI 智能输入 */}
       <div className={styles.aiBar}>
-        {/* 相册 */}
-        <input ref={galleryRef} type="file" accept="image/*"
+        <input ref={fileRef} type="file" accept="image/*"
           onChange={handleScreenshot} style={{ display: 'none' }} />
-        {/* 拍照 */}
-        <input ref={cameraRef} type="file" accept="image/*"
-          capture="environment" onChange={handleScreenshot} style={{ display: 'none' }} />
 
         <button type="button"
           className={`${styles.aiBtn} ${screenshotAI.stage === 'recognizing' || screenshotAI.stage === 'uploading' ? styles.aiBtnActive : ''}`}
-          onClick={() => galleryRef.current?.click()}
+          onClick={() => fileRef.current?.click()}
           disabled={screenshotAI.stage !== 'idle' && screenshotAI.stage !== 'error'}>
           {screenshotAI.stage === 'recognizing' ? '🔍 识别中...'
             : screenshotAI.stage === 'uploading' ? '📤 上传中...'
-            : '🖼️ 相册识别'}
+            : '🖼️ 图片识别'}
         </button>
 
-        <button type="button"
-          className={styles.aiBtn}
-          onClick={() => cameraRef.current?.click()}>
-          📷 拍照
-        </button>
-
-        {/* 语音记账 */}
         {voice.isSupported && (
-          <button
-            type="button"
+          <button type="button"
             className={`${styles.aiBtn} ${voice.isListening ? styles.voiceActive : ''}`}
-            onClick={voice.isListening ? voice.stop : voice.start}
-          >
-            {voice.isListening ? '🎤 停止' : '🎤 语音'}
+            onClick={voice.isListening ? voice.stop : voice.start}>
+            {voice.isListening ? '🎤 停止' : '🎤 语音识别'}
           </button>
         )}
       </div>
 
-      {/* AI 状态 */}
       {(screenshotAI.stage === 'recognizing' || voice.isListening) && (
         <div className={styles.aiStatus}>
           {screenshotAI.stage === 'recognizing' && '小熊正在识别截图中...'}
@@ -165,7 +156,6 @@ export default function AddExpensePage() {
       {screenshotAI.error && <p className={styles.error}>{screenshotAI.error}</p>}
       {aiFilled && <p className={styles.aiSuccess}>AI已自动填写，请确认后保存</p>}
 
-      {/* 预览截图 */}
       {previewUrl && (
         <div className={styles.preview}>
           <img src={previewUrl} alt="支付截图" />
@@ -173,13 +163,11 @@ export default function AddExpensePage() {
         </div>
       )}
 
-      {/* 语音识别文字 */}
       {voice.transcript && (
         <div className={styles.voiceText}>你说的是："{voice.transcript}"</div>
       )}
 
       <form onSubmit={handleSubmit}>
-        {/* 类型切换 */}
         <div className={styles.typeToggle}>
           <button type="button"
             className={`${styles.typeBtn} ${type === 'expense' ? styles.typeActive : ''}`}
@@ -189,7 +177,6 @@ export default function AddExpensePage() {
             onClick={() => { setType('income'); setCategoryId(null); }}>收入</button>
         </div>
 
-        {/* 金额 */}
         <div className={styles.amountRow}>
           <div className={styles.amountInputWrap}>
             <span className={styles.currencySymbol}>{currency === 'CNY' ? '¥' : '€'}</span>
@@ -204,21 +191,18 @@ export default function AddExpensePage() {
             onClick={() => setCurrency(currency === 'CNY' ? 'EUR' : 'CNY')}>{currency}</button>
         </div>
 
-        {/* 分类 */}
         <div className={styles.section}>
           <p className={styles.sectionLabel}>分类</p>
           <CategoryPicker categories={filteredCategories} selectedId={categoryId}
             onSelect={(id) => { setCategoryId(id); setError(''); }} />
         </div>
 
-        {/* 日期 */}
         <div className={styles.section}>
           <p className={styles.sectionLabel}>日期</p>
-          <input className="input" type="date" value={date}
-            onChange={(e) => setDate(e.target.value)} style={{ width: '100%' }} />
+          <input className={styles.dateInput} type="date" value={date}
+            onChange={(e) => setDate(e.target.value)} />
         </div>
 
-        {/* 账户 */}
         <div className={styles.section}>
           <p className={styles.sectionLabel}>账户{filteredAssets.length === 0 ? '（暂无可选账户）' : ''}</p>
           {filteredAssets.length > 0 ? (
@@ -234,7 +218,6 @@ export default function AddExpensePage() {
           )}
         </div>
 
-        {/* 备注 */}
         <div className={styles.section}>
           <p className={styles.sectionLabel}>备注</p>
           <input className="input" type="text" placeholder="如：麦当劳午餐"
