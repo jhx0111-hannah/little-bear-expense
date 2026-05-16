@@ -1,0 +1,192 @@
+.page {
+  padding: var(--space-md);
+  padding-bottom: var(--space-xl);
+  animation: fade-in-up var(--transition-normal);
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin-bottom: var(--space-md);
+}
+
+/* 时间选择 */
+.rangeBar {
+  margin-bottom: var(--space-lg);
+}
+
+.rangeToggle {
+  display: flex;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+}
+
+.rangeBtn {
+  padding: var(--space-xs) var(--space-lg);
+  border-radius: var(--radius-full);
+  border: 2px solid #d4ccc4;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  transition: all var(--transition-fast);
+}
+.rangeBtnActive {
+  border-color: var(--color-sage);
+  background: var(--color-sage);
+  color: white;
+}
+
+.monthNav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  justify-content: center;
+}
+
+.navBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  border: 2px solid #d4ccc4;
+  font-size: 18px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  transition: all var(--transition-fast);
+}
+.navBtn:active { border-color: var(--color-sage); }
+.navBtn:disabled { opacity: 0.3; }
+
+.rangeLabel {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  min-width: 120px;
+  text-align: center;
+}
+
+/* 图表卡片 */
+.chartCard {
+  margin-bottom: var(--space-md);
+}
+
+.chartTitle {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.noData {
+  font-size: var(--font-size-sm);
+  color: var(--text-hint);
+  text-align: center;
+  padding: var(--space-lg);
+}
+
+/* 图例 */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.legendItem {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+}
+
+/* 每日明细 */
+.dailyGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.dayCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-xs);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  min-height: 52px;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+.dayCell:active { transform: scale(0.95); }
+
+.hasData {
+  background: rgba(181, 196, 177, 0.06);
+  border-color: #e8e0d8;
+}
+
+.dayNum {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.dayExpense {
+  font-size: 10px;
+  color: var(--color-expense);
+}
+
+.dayIncome {
+  font-size: 10px;
+  color: var(--color-income);
+}
+
+.dayDetail {
+  grid-column: 1 / -1;
+  background: rgba(245, 240, 235, 0.6);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+  margin-top: var(--space-xs);
+  margin-bottom: var(--space-xs);
+}
+
+.dayItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  font-size: var(--font-size-sm);
+  border-bottom: 1px solid rgba(0,0,0,0.03);
+}
+.dayItem:last-child { border: none; }
+
+.expenseColor { color: var(--color-expense); font-weight: 500; }
+.incomeColor { color: var(--color-income); font-weight: 500; }
+
+.monthSummary {
+  margin-top: var(--space-md);
+  padding-top: var(--space-sm);
+  border-top: 2px solid #e8e0d8;
+  display: flex;
+  gap: var(--space-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  flex-wrap: wrap;
+}
+
+.loading, .empty {
+  text-align: center;
+  padding: var(--space-xl);
+  color: var(--text-hint);
+  font-size: var(--font-size-sm);
+}

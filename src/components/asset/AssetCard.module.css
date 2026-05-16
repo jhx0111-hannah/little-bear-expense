@@ -1,0 +1,55 @@
+.card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+  min-height: 56px;
+}
+.card:active {
+  background: #f5f0eb;
+}
+
+.icon {
+  font-size: 28px;
+  flex-shrink: 0;
+  width: 42px;
+  text-align: center;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.type {
+  font-size: var(--font-size-xs);
+  color: var(--text-hint);
+}
+
+.currencyBadge {
+  display: inline-block;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: rgba(181, 196, 177, 0.15);
+  color: var(--color-sage);
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.balance {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}

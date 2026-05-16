@@ -1,0 +1,72 @@
+/* ==========================================
+   小熊记账 — 莫兰迪色系设计 Token
+   ========================================== */
+
+:root {
+  /* === 主色调 === */
+  --color-sage:        #b5c4b1;  /* 鼠尾草绿 — 主按钮、强调 */
+  --color-dusty-rose:  #c4a8a8;  /* 灰玫瑰 — 支出相关 */
+  --color-lavender:    #b5a9b0;  /* 灰紫 — 中性元素 */
+  --color-powder-blue: #a8b5c4;  /* 粉蓝 — 链接、信息 */
+  --color-warm-beige:  #d4c9b8;  /* 暖米色 — 背景点缀 */
+  --color-muted-teal:  #a3b5a6;  /* 茶绿 — 收入相关 */
+
+  /* === 背景 === */
+  --bg-primary:        #faf7f2;  /* 暖白（主背景） */
+  --bg-secondary:      #f5f0eb;  /* 稍暖（区段背景） */
+  --bg-card:           #ffffff;  /* 纯白（卡片） */
+  --bg-overlay:        rgba(74, 68, 68, 0.3);  /* 遮罩 */
+
+  /* === 文字 === */
+  --text-primary:      #4a4444;  /* 深灰棕 */
+  --text-secondary:    #8c8484;  /* 中等灰 */
+  --text-hint:         #b8b0b0;  /* 浅灰提示 */
+  --text-on-primary:   #ffffff;  /* 主色上的文字 */
+
+  /* === 语义色 === */
+  --color-income:      #a3b5a6;  /* 收入绿 */
+  --color-expense:     #c4a8a8;  /* 支出玫瑰 */
+  --color-danger:      #c49a9a;  /* 警示 */
+  --color-warning:     #d4c4a8;  /* 提醒 */
+
+  /* === 小熊主题 === */
+  --color-bear-brown:  #b5a08a;  /* 熊棕 */
+  --color-bear-pink:   #d4b8b8;  /* 熊粉（腮红） */
+
+  /* === 间距 === */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+
+  /* === 圆角 === */
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  20px;
+  --radius-full: 9999px;
+
+  /* === 阴影 === */
+  --shadow-sm: 0 1px 3px rgba(74, 68, 68, 0.06);
+  --shadow-md: 0 4px 12px rgba(74, 68, 68, 0.08);
+  --shadow-lg: 0 8px 24px rgba(74, 68, 68, 0.10);
+
+  /* === 字体 === */
+  --font-family: 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB',
+                 'Microsoft YaHei', sans-serif;
+  --font-size-xs:   12px;
+  --font-size-sm:   14px;
+  --font-size-base: 16px;
+  --font-size-lg:   20px;
+  --font-size-xl:   24px;
+  --font-size-2xl:  32px;
+
+  /* === 动效 === */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  /* === 底部安全区 === */
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+}

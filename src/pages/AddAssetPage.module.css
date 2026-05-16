@@ -1,0 +1,118 @@
+.page {
+  padding: var(--space-md);
+  animation: fade-in-up var(--transition-normal);
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin-bottom: var(--space-md);
+}
+
+.sectionLabel {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
+}
+
+.presetBtn {
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  border: 1.5px solid #d4ccc4;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  transition: all var(--transition-fast);
+}
+.presetBtn:active {
+  border-color: var(--color-sage);
+  color: var(--color-sage);
+}
+
+/* 表单字段 */
+.field {
+  margin-bottom: var(--space-lg);
+}
+
+.label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.typeRow {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.typeBtn {
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-full);
+  border: 2px solid #d4ccc4;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  transition: all var(--transition-fast);
+}
+.typeBtn:active {
+  transform: scale(0.96);
+}
+
+.typeBtnActive {
+  border-color: var(--color-sage);
+  background: rgba(181, 196, 177, 0.12);
+  color: var(--color-sage);
+}
+
+.balanceRow {
+  display: flex;
+  align-items: center;
+  border-bottom: 3px solid #d4ccc4;
+  padding: var(--space-sm) 0;
+  transition: border-color var(--transition-fast);
+}
+.balanceRow:focus-within {
+  border-color: var(--color-sage);
+}
+
+.balanceSymbol {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin-right: var(--space-xs);
+}
+
+.balanceInput {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+}
+
+.error {
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  text-align: center;
+  padding: var(--space-sm);
+  margin-bottom: var(--space-md);
+  background: rgba(196, 154, 154, 0.1);
+  border-radius: var(--radius-sm);
+}
+
+.saveBtn {
+  width: 100%;
+  margin-top: var(--space-sm);
+}

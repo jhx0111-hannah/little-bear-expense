@@ -1,0 +1,76 @@
+.page {
+  padding: var(--space-md);
+  animation: fade-in-up var(--transition-normal);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+}
+
+.addBtn {
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-sage);
+  color: var(--color-sage);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-fast);
+}
+.addBtn:active {
+  background: var(--color-sage);
+  color: white;
+}
+
+/* 总资产 */
+.totalCard {
+  margin-bottom: var(--space-lg);
+  background: linear-gradient(135deg, #f5f0eb 0%, #e8e4dd 100%);
+}
+
+.totalLabel {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.totalAmount {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-income);
+  margin: var(--space-xs) 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.totalDetail {
+  display: flex;
+  gap: var(--space-lg);
+  font-size: var(--font-size-xs);
+  color: var(--text-hint);
+}
+
+/* 账户列表 */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* 空状态 */
+.empty {
+  text-align: center;
+  padding: var(--space-xl) var(--space-md);
+  color: var(--text-secondary);
+}
+
+.emptyHint {
+  font-size: var(--font-size-xs);
+  color: var(--text-hint);
+  margin-top: var(--space-xs);
+}

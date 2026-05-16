@@ -1,0 +1,67 @@
+.page {
+  padding: var(--space-md);
+  animation: fade-in-up var(--transition-normal);
+}
+
+.title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin-bottom: var(--space-md);
+}
+
+.monthBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.navBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  border: 2px solid #d4ccc4;
+  font-size: 18px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+}
+.navBtn:active { border-color: var(--color-sage); }
+
+.monthLabel {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  min-width: 100px;
+  text-align: center;
+}
+
+.summary {
+  display: flex;
+  gap: var(--space-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.sumIncome { color: var(--color-income); }
+.sumExpense { color: var(--color-expense); }
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.empty {
+  text-align: center;
+  padding: var(--space-xl);
+  color: var(--text-hint);
+  font-size: var(--font-size-sm);
+}

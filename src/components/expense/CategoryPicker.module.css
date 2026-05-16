@@ -1,0 +1,45 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-sm);
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: var(--space-sm) var(--space-xs);
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  background: var(--bg-card);
+  transition: border-color var(--transition-fast),
+              background var(--transition-fast);
+  min-height: 64px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.item:active {
+  transform: scale(0.96);
+}
+
+.selected {
+  border-color: var(--color-sage);
+  background: rgba(181, 196, 177, 0.12);
+}
+
+.icon {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.name {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.selected .name {
+  color: var(--color-sage);
+}
