@@ -96,6 +96,21 @@
   align-items: center;
 }
 
+.catSelect {
+  width: 70px;
+  flex-shrink: 0;
+  border: 2px solid #d4ccc4;
+  border-radius: var(--radius-md);
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--font-size-xs);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-weight: 500;
+  outline: none;
+  min-height: 40px;
+}
+.catSelect:focus { border-color: var(--color-sage); }
+
 .catAddBtn {
   width: 40px;
   height: 40px;

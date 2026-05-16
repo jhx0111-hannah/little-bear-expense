@@ -117,9 +117,8 @@ export default function SettingsPage() {
       <div className={`card ${styles.section}`}>
         <p className={styles.sectionTitle}>分类管理</p>
         <div className={styles.catForm}>
-          <select className="input" value={newCatType}
-            onChange={(e) => setNewCatType(e.target.value as 'expense'|'income')}
-            style={{ width: 80, flexShrink: 0 }}>
+          <select className={styles.catSelect} value={newCatType}
+            onChange={(e) => setNewCatType(e.target.value as 'expense'|'income')}>
             <option value="expense">支出</option>
             <option value="income">收入</option>
           </select>
