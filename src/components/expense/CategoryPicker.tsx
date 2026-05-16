@@ -1,4 +1,5 @@
 import type { Category } from '../../types/expense';
+import CategoryIcon from '../common/CategoryIcon';
 import styles from './CategoryPicker.module.css';
 
 interface Props {
@@ -17,7 +18,7 @@ export default function CategoryPicker({ categories, selectedId, onSelect }: Pro
           onClick={() => onSelect(cat.id)}
           type="button"
         >
-          <span className={styles.icon}>{cat.icon}</span>
+          <CategoryIcon name={cat.name} size={40} />
           <span className={styles.name}>{cat.name}</span>
         </button>
       ))}
