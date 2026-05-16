@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 
 const CN_FONTS = [
-  { name: '① ZCOOL KuaiLe', family: 'ZCOOL KuaiLe', desc: '圆润可爱·活泼手写' },
-  { name: '② ZCOOL XiaoWei', family: 'ZCOOL XiaoWei', desc: '清新文艺·圆角柔和' },
-  { name: '③ Ma Shan Zheng', family: 'Ma Shan Zheng', desc: '楷书手写·温暖人情' },
-  { name: '④ Noto Serif SC', family: 'Noto Serif SC', desc: '优雅文艺·书卷气' },
-  { name: '⑤ ZCOOL QingKe HuangYou', family: 'ZCOOL QingKe HuangYou', desc: '端正楷书·清晰秀气' },
+  { name: '① Noto Serif SC', family: 'Noto Serif SC', desc: '思源宋体·优雅经典' },
+  { name: '② cwTeXFangSong', family: 'cwTeXFangSong', desc: '仿宋体·清瘦秀美' },
+  { name: '③ LXGW WenKai', family: 'LXGW WenKai', desc: '霞鹜文楷·文艺温暖' },
+  { name: '④ Noto Serif TC', family: 'Noto Serif TC', desc: '宋体繁中·古典精致' },
+  { name: '⑤ STSong', family: 'STSong, Songti SC, serif', desc: '系统宋体·经典耐看' },
 ];
 
 const EN_FONTS = [
@@ -18,11 +18,20 @@ const EN_FONTS = [
 
 export default function FontPreview() {
   useEffect(() => {
-    const link = document.createElement('link');
-    link.href = 'https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=ZCOOL+XiaoWei&family=ZCOOL+QingKe+HuangYou&family=Ma+Shan+Zheng&family=Noto+Serif+SC&family=Nunito:wght@400;600;700&family=Quicksand:wght@400;600;700&family=Fredoka:wght@400;600;700&family=Baloo+2:wght@400;600;700&family=Patrick+Hand&display=swap';
-    link.rel = 'stylesheet';
-    document.head.appendChild(link);
-    return () => { document.head.removeChild(link); };
+    // Google Fonts
+    const link1 = document.createElement('link');
+    link1.href = 'https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif+TC:wght@400;700&family=cwTeXFangSong&family=Nunito:wght@400;600;700&family=Quicksand:wght@400;600;700&family=Fredoka:wght@400;600;700&family=Baloo+2:wght@400;600;700&family=Patrick+Hand&display=swap';
+    link1.rel = 'stylesheet';
+    // 霞鹜文楷 CDN
+    const link2 = document.createElement('link');
+    link2.href = 'https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css';
+    link2.rel = 'stylesheet';
+    document.head.appendChild(link1);
+    document.head.appendChild(link2);
+    return () => {
+      document.head.removeChild(link1);
+      document.head.removeChild(link2);
+    };
   }, []);
 
   return (
