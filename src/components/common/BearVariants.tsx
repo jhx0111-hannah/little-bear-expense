@@ -2,27 +2,6 @@
 // 小熊记账 — 5个熊形象备选方案
 // ========================================
 
-function BearWrap({ children, label }: { children: React.ReactNode; label: string }) {
-  return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: 12,
-      padding: 24,
-      background: '#fff',
-      borderRadius: 16,
-      boxShadow: '0 2px 8px rgba(74,68,68,0.06)',
-      minWidth: 140,
-    }}>
-      <div style={{ width: 100, height: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {children}
-      </div>
-      <span style={{ fontSize: 13, color: '#8c8484', fontWeight: 500 }}>{label}</span>
-    </div>
-  );
-}
-
 // ====================================================
 // 方案1：圆润团子熊 — 极简软萌，像糯米团子
 // ====================================================

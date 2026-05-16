@@ -1,3 +1,5 @@
+import type { Asset } from './asset';
+
 /** 分类类型 */
 export type CategoryType = 'expense' | 'income';
 

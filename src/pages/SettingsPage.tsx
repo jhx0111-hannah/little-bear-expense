@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useExpenses } from '../hooks/useExpenses';
 import { supabase } from '../config/supabase';
-import { addCategory } from '../services/api/categories';
 import styles from './SettingsPage.module.css';
 
 export default function SettingsPage() {

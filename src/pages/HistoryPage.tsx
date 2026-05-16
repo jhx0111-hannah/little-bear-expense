@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useExpenses } from '../hooks/useExpenses';
 import { fetchRangeExpenses } from '../services/api/expenses';
 import { useAuth } from '../hooks/useAuth';
 import type { Expense } from '../types/expense';

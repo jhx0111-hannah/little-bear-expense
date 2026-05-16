@@ -192,7 +192,7 @@ export default function StatisticsPage() {
               <ResponsiveContainer width="100%" height={220}>
                 <PieChart><Pie data={expensePieData} cx="50%" cy="50%" innerRadius={50} outerRadius={85} paddingAngle={2} dataKey="value">
                   {expensePieData.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
-                </Pie><Tooltip formatter={(val: number) => `¥${val.toFixed(2)}`} /></PieChart>
+                </Pie><Tooltip formatter={(val: any) => `¥${Number(val).toFixed(2)}`} /></PieChart>
               </ResponsiveContainer>
               <div className={styles.legend}>
                 {expensePieData.map((d, i) => (
@@ -211,7 +211,7 @@ export default function StatisticsPage() {
               <ResponsiveContainer width="100%" height={220}>
                 <PieChart><Pie data={incomePieData} cx="50%" cy="50%" innerRadius={50} outerRadius={85} paddingAngle={2} dataKey="value">
                   {incomePieData.map((_, i) => <Cell key={i} fill={INCOME_COLORS[i % INCOME_COLORS.length]} />)}
-                </Pie><Tooltip formatter={(val: number) => `¥${val.toFixed(2)}`} /></PieChart>
+                </Pie><Tooltip formatter={(val: any) => `¥${Number(val).toFixed(2)}`} /></PieChart>
               </ResponsiveContainer>
               <div className={styles.legend}>
                 {incomePieData.map((d, i) => (
