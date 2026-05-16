@@ -10,7 +10,6 @@ import AddAssetPage from './pages/AddAssetPage';
 import StatisticsPage from './pages/StatisticsPage';
 import HistoryPage from './pages/HistoryPage';
 import SettingsPage from './pages/SettingsPage';
-import FontPreview from './pages/FontPreview';
 import LoadingSpinner from './components/common/LoadingSpinner';
 
 function App() {
@@ -50,7 +49,6 @@ function App() {
         <Route path="/statistics" element={<StatisticsPage />} />
         <Route path="/history" element={<HistoryPage />} />
         <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/font-preview" element={<FontPreview />} />
         <Route path="/login" element={<Navigate to="/" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

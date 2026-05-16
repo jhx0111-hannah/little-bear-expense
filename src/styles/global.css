@@ -1,6 +1,8 @@
 /* 小熊记账 — 全局样式 */
 
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
+/* 霞鹜文楷（中文）+ Quicksand（英文） */
+@import url('https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
 
 *,
 *::before,
