@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from 'react';
 import { fetchRangeExpenses, deleteExpense } from '../services/api/expenses';
 import { useAuth } from '../hooks/useAuth';
 import type { Expense } from '../types/expense';
-import { getCurrencySymbol } from '../utils/currencies';
 import ExpenseCard from '../components/expense/ExpenseCard';
 import ExpenseEditModal from '../components/expense/ExpenseEditModal';
 import styles from './HistoryPage.module.css';
@@ -39,17 +38,6 @@ export default function HistoryPage() {
     );
   }, [expenses, search]);
 
-  const totalsByCurrency = useMemo(() => {
-    const map = new Map<string, { expense: number; income: number }>();
-    filtered.forEach((e) => {
-      const cur = map.get(e.currency) || { expense: 0, income: 0 };
-      if (e.type === 'expense') cur.expense += Number(e.amount);
-      else cur.income += Number(e.amount);
-      map.set(e.currency, cur);
-    });
-    return map;
-  }, [filtered]);
-
   return (
     <div className={styles.page}>
       <h1 className={styles.title}>流水明细</h1>
@@ -67,16 +55,6 @@ export default function HistoryPage() {
       <input className="input" type="text" placeholder="搜索描述或商户..."
         value={search} onChange={(e) => setSearch(e.target.value)}
         style={{ marginBottom: 'var(--space-md)', width: '100%' }} />
-
-      <div className={styles.summary}>
-        {Array.from(totalsByCurrency.entries()).map(([cur, v]) => (
-          <span key={cur}>
-            <span className={styles.sumIncome}>{getCurrencySymbol(cur)}{v.income.toFixed(2)}</span>{' '}
-            <span className={styles.sumExpense}>{getCurrencySymbol(cur)}{v.expense.toFixed(2)}</span>{' '}
-            <span>({cur})</span>
-          </span>
-        ))}
-      </div>
 
       {loading ? (
         <p className={styles.empty}>加载中...</p>
