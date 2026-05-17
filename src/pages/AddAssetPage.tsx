@@ -5,12 +5,13 @@ import { BANK_PRESETS } from '../types/asset';
 import type { Currency } from '../types/expense';
 import { addAsset } from '../services/api/assets';
 import { useAuth } from '../hooks/useAuth';
+import { ALL_CURRENCIES } from '../utils/currencies';
 import styles from './AddAssetPage.module.css';
 
 export default function AddAssetPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { currencies, refreshAssets } = useExpenses();
+  const { refreshAssets } = useExpenses();
 
   const [name, setName] = useState('');
   const [currency, setCurrency] = useState<Currency>('CNY');
@@ -71,15 +72,12 @@ export default function AddAssetPage() {
 
         <div className={styles.field}>
           <label className={styles.label}>币种</label>
-          <div className={styles.typeRow}>
-            {currencies.map((c) => (
-              <button key={c} type="button"
-                className={`${styles.typeBtn} ${currency === c ? styles.typeBtnActive : ''}`}
-                onClick={() => setCurrency(c)}>
-                {c}
-              </button>
+          <select className="input" value={currency}
+            onChange={(e) => setCurrency(e.target.value)} style={{ width: '100%' }}>
+            {ALL_CURRENCIES.map((c) => (
+              <option key={c.code} value={c.code}>{c.symbol} {c.code} — {c.name}</option>
             ))}
-          </div>
+          </select>
         </div>
 
         <div className={styles.field}>

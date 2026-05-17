@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import type { Expense } from '../../types/expense';
+import { getCurrencySymbol } from '../../utils/currencies';
 import styles from './ExpenseCard.module.css';
 
 interface Props {
@@ -11,7 +12,7 @@ interface Props {
 export default function ExpenseCard({ expense, onClick, onDelete }: Props) {
   const isExpense = expense.type === 'expense';
   const sign = isExpense ? '-' : '+';
-  const symbol = expense.currency === 'CNY' ? '¥' : '€';
+  const symbol = getCurrencySymbol(expense.currency);
 
   // 左滑删除
   const [swiped, setSwiped] = useState(false);

@@ -5,12 +5,13 @@ import { useScreenshotAI } from '../hooks/useScreenshotAI';
 import { useVoiceInput } from '../hooks/useVoiceInput';
 import { supabase } from '../config/supabase';
 import type { Currency, TransactionType, AIRecognitionResult } from '../types/expense';
+import { ALL_CURRENCIES, getCurrencySymbol } from '../utils/currencies';
 import CategoryPicker from '../components/expense/CategoryPicker';
 import styles from './AddExpensePage.module.css';
 
 export default function AddExpensePage() {
   const navigate = useNavigate();
-  const { categories, assets, currencies, addExpense, loadInitial } = useExpenses();
+  const { categories, assets, addExpense, loadInitial } = useExpenses();
   const screenshotAI = useScreenshotAI();
   const voice = useVoiceInput();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -189,7 +190,9 @@ export default function AddExpensePage() {
           </div>
           <select className={styles.currencySelect} value={currency}
             onChange={(e) => setCurrency(e.target.value)}>
-            {currencies.map((c) => <option key={c} value={c}>{c}</option>)}
+            {ALL_CURRENCIES.map((c) => (
+              <option key={c.code} value={c.code}>{c.symbol} {c.code}</option>
+            ))}
           </select>
         </div>
 

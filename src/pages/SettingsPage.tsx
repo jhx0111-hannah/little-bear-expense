@@ -4,18 +4,14 @@ import { useExpenses } from '../hooks/useExpenses';
 import { supabase } from '../config/supabase';
 import styles from './SettingsPage.module.css';
 
-const DEFAULT_CURRENCIES = ['CNY', 'EUR'];
-
 export default function SettingsPage() {
   const { user, signOut } = useAuth();
-  const { categories, assets, expenses, currencies, loadInitial } = useExpenses();
+  const { categories, expenses, loadInitial } = useExpenses();
   const [nickname, setNickname] = useState('小熊用户');
-  const [customCurrencies, setCustomCurrencies] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState('');
-  const [newCur, setNewCur] = useState('');
 
-  // 自定义分类
+  // 分类
   const [newCatName, setNewCatName] = useState('');
   const [newCatIcon, setNewCatIcon] = useState('📦');
   const [newCatType, setNewCatType] = useState<'expense' | 'income'>('expense');
@@ -25,11 +21,8 @@ export default function SettingsPage() {
 
   const loadProfile = async () => {
     if (!user) return;
-    const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single();
-    if (data) {
-      setNickname(data.display_name || '小熊用户');
-      setCustomCurrencies(data.custom_currencies || []);
-    }
+    const { data } = await supabase.from('profiles').select('display_name').eq('id', user.id).single();
+    if (data?.display_name) setNickname(data.display_name);
   };
 
   const saveProfile = async () => {
@@ -37,26 +30,11 @@ export default function SettingsPage() {
     setSaving(true);
     const { error } = await supabase.from('profiles').update({
       display_name: nickname,
-      custom_currencies: customCurrencies,
       updated_at: new Date().toISOString(),
     }).eq('id', user.id);
     setSaving(false);
     if (error) setMsg('保存失败：' + error.message);
     else { setMsg('✅ 已保存'); setTimeout(() => setMsg(''), 2000); }
-  };
-
-  const addCurrency = () => {
-    const code = newCur.trim().toUpperCase();
-    if (!code || code.length !== 3) { setMsg('请输入3位货币代码，如 GBP、KRW'); return; }
-    const all = [...DEFAULT_CURRENCIES, ...customCurrencies];
-    if (all.includes(code)) { setMsg('该货币已存在'); return; }
-    setCustomCurrencies([...customCurrencies, code]);
-    setNewCur('');
-    setMsg('');
-  };
-
-  const removeCurrency = (code: string) => {
-    setCustomCurrencies(customCurrencies.filter((c) => c !== code));
   };
 
   const handleAddCategory = async () => {
@@ -82,7 +60,7 @@ export default function SettingsPage() {
     const header = '日期,类型,分类,金额,币种,商户,备注,账户\n';
     const rows = expenses.map((e) => {
       const cat = categories.find((c) => c.id === e.category_id);
-      const a = assets.find((x) => x.id === e.asset_id);
+      const a = (e as any).asset;
       return [e.expense_date, e.type, cat?.name || '', e.amount, e.currency, e.merchant || '', e.description || '', a?.name || ''].join(',');
     }).join('\n');
     const blob = new Blob([header + rows], { type: 'text/csv' });
@@ -104,34 +82,11 @@ export default function SettingsPage() {
           <input className="input" value={nickname} onChange={(e) => setNickname(e.target.value)} /></div>
         <div className={styles.field}><label>邮箱</label>
           <p className={styles.email}>{user?.email || '未知'}</p></div>
-
-        {/* 币种管理 */}
-        <div className={styles.field}>
-          <label>支持的币种</label>
-          <div className={styles.currencyRow}>
-            {currencies.map((c) => (
-              <span key={c} className={styles.currencyChip}>
-                {c}
-                {!DEFAULT_CURRENCIES.includes(c) && (
-                  <button className={styles.currencyDel} onClick={() => removeCurrency(c)}>×</button>
-                )}
-              </span>
-            ))}
-            <div className={styles.currencyAdd}>
-              <input className={styles.currencyAddInput} placeholder="+添加" value={newCur}
-                onChange={(e) => setNewCur(e.target.value.toUpperCase())}
-                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addCurrency(); } }} />
-              <button className={styles.currencyAddBtn} onClick={addCurrency}>+</button>
-            </div>
-          </div>
-        </div>
-
         {msg && <p className={styles.msg}>{msg}</p>}
         <button className={`btn-primary ${styles.saveBtn}`} onClick={saveProfile} disabled={saving}>
           {saving ? '保存中...' : '保存设置'}</button>
       </div>
 
-      {/* 自定义分类 */}
       <div className={`card ${styles.section}`}>
         <p className={styles.sectionTitle}>分类管理</p>
         <div className={styles.catForm}>

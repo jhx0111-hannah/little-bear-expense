@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useExpenses } from '../hooks/useExpenses';
 import BearIcon from '../components/common/BearIcon';
 import AssetEditModal from '../components/asset/AssetEditModal';
+import { getCurrencySymbol } from '../utils/currencies';
 import type { Asset } from '../types/asset';
 import styles from './DashboardPage.module.css';
 
@@ -52,8 +53,6 @@ export default function DashboardPage() {
     return groups;
   }, [assets]);
 
-  const currencySymbol = (c: string) => c === 'CNY' ? '¥' : c === 'EUR' ? '€' : c;
-
   return (
     <div className={styles.page}>
       <div className={styles.header}>
@@ -79,8 +78,8 @@ export default function DashboardPage() {
             <div className={styles.totalRow}>
               {groupedAssets.map((g) => (
                 <div key={g.currency} className={styles.totalItem}>
-                  <p className={styles.totalLabel}>{currencySymbol(g.currency)} {g.currency}</p>
-                  <p className={styles.totalValue}>{currencySymbol(g.currency)}{g.total.toFixed(2)}</p>
+                  <p className={styles.totalLabel}>{getCurrencySymbol(g.currency)} {g.currency}</p>
+                  <p className={styles.totalValue}>{getCurrencySymbol(g.currency)}{g.total.toFixed(2)}</p>
                 </div>
               ))}
             </div>
@@ -94,7 +93,7 @@ export default function DashboardPage() {
                     onClick={() => setEditingAsset(a)}>
                     <span className={styles.accountIcon}>{a.icon}</span>
                     <span className={styles.accountName}>{a.name}</span>
-                    <span className={styles.accountBalance}>{currencySymbol(a.currency)}{Number(a.balance).toFixed(2)}</span>
+                    <span className={styles.accountBalance}>{getCurrencySymbol(a.currency)}{Number(a.balance).toFixed(2)}</span>
                   </div>
                 ))}
               </div>
