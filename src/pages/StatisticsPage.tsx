@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { fetchRangeExpenses } from '../services/api/expenses';
 import type { Expense } from '../types/expense';
 import { formatCurrency } from '../utils/formatCurrency';
+import { getCurrencySymbol } from '../utils/currencies';
 import styles from './StatisticsPage.module.css';
 
 type RangeType = 'month' | 'year';
@@ -51,33 +52,54 @@ export default function StatisticsPage() {
 
   useEffect(() => { fetchData(); }, [user, range.from, range.to]);
 
-  // 支出饼图
+  // 按币种分组统计
+  const currencyGroups = useMemo(() => {
+    const map = new Map<string, Expense[]>();
+    expenses.forEach((e) => {
+      const list = map.get(e.currency) || [];
+      list.push(e);
+      map.set(e.currency, list);
+    });
+    return Array.from(map.entries());
+  }, [expenses]);
+
+  // 所有币种的支出/收入总额
+  const totalsByCurrency = useMemo(() => {
+    const map = new Map<string, { expense: number; income: number }>();
+    expenses.forEach((e) => {
+      const cur = map.get(e.currency) || { expense: 0, income: 0 };
+      if (e.type === 'expense') cur.expense += Number(e.amount);
+      else cur.income += Number(e.amount);
+      map.set(e.currency, cur);
+    });
+    return map;
+  }, [expenses]);
+
+  // 支出饼图（按分类+币种区分）
   const expensePieData = useMemo(() => {
     const map = new Map<string, { name: string; value: number; icon: string }>();
     expenses.filter((e) => e.type === 'expense').forEach((e) => {
-      const name = e.category?.name || '未分类';
-      const existing = map.get(name);
+      const catName = e.category?.name || '未分类';
+      const key = `${catName} (${e.currency})`;
+      const existing = map.get(key);
       if (existing) existing.value += Number(e.amount);
-      else map.set(name, { name, value: Number(e.amount), icon: e.category?.icon || '📦' });
+      else map.set(key, { name: key, value: Number(e.amount), icon: e.category?.icon || '📦' });
     });
     return Array.from(map.values()).sort((a, b) => b.value - a.value);
   }, [expenses]);
-
-  const totalExpense = useMemo(() => expensePieData.reduce((s, d) => s + d.value, 0), [expensePieData]);
 
   // 收入饼图
   const incomePieData = useMemo(() => {
     const map = new Map<string, { name: string; value: number; icon: string }>();
     expenses.filter((e) => e.type === 'income').forEach((e) => {
-      const name = e.category?.name || '未分类';
-      const existing = map.get(name);
+      const catName = e.category?.name || '未分类';
+      const key = `${catName} (${e.currency})`;
+      const existing = map.get(key);
       if (existing) existing.value += Number(e.amount);
-      else map.set(name, { name, value: Number(e.amount), icon: e.category?.icon || '💰' });
+      else map.set(key, { name: key, value: Number(e.amount), icon: e.category?.icon || '💰' });
     });
     return Array.from(map.values()).sort((a, b) => b.value - a.value);
   }, [expenses]);
-
-  const totalIncome = useMemo(() => incomePieData.reduce((s, d) => s + d.value, 0), [incomePieData]);
 
   // 月度每日明细
   const dailyDetail = useMemo(() => {
@@ -103,10 +125,16 @@ export default function StatisticsPage() {
 
   const [expandedDay, setExpandedDay] = useState<string | null>(null);
 
-  const monthlyTotal = useMemo(() => ({
-    income: dailyDetail.reduce((s, d) => s + d.income, 0),
-    expense: dailyDetail.reduce((s, d) => s + d.expense, 0),
-  }), [dailyDetail]);
+  const monthlyTotal = useMemo(() => {
+    const map = new Map<string, { income: number; expense: number }>();
+    expenses.forEach((e) => {
+      const cur = map.get(e.currency) || { income: 0, expense: 0 };
+      if (e.type === 'income') cur.income += Number(e.amount);
+      else cur.expense += Number(e.amount);
+      map.set(e.currency, cur);
+    });
+    return map;
+  }, [expenses]);
 
   const rangeLabel = rangeType === 'month' ? getMonthLabel(monthOffset)
     : `${range.from.slice(0, 4)}年`;
@@ -165,9 +193,13 @@ export default function StatisticsPage() {
           </div>
           <div className={styles.monthSummary}>
             <span>本月累计：</span>
-            <span className={styles.incomeColor}>收入 ¥{monthlyTotal.income.toFixed(2)}</span>
-            <span className={styles.expenseColor}>支出 ¥{monthlyTotal.expense.toFixed(2)}</span>
-            <span>结余 ¥{(monthlyTotal.income - monthlyTotal.expense).toFixed(2)}</span>
+            {Array.from(monthlyTotal.entries()).map(([cur, v]) => (
+              <span key={cur}>
+                <span className={styles.incomeColor}>{getCurrencySymbol(cur)}{v.income.toFixed(2)}</span>{' '}
+                <span className={styles.expenseColor}>{getCurrencySymbol(cur)}{v.expense.toFixed(2)}</span>{' '}
+                <span>({cur})</span>
+              </span>
+            ))}
           </div>
         </div>
       )}
@@ -177,7 +209,10 @@ export default function StatisticsPage() {
       : expenses.length === 0 ? <p className={styles.empty}>该时间段暂无记录</p>
       : <>
         <div className={`card ${styles.chartCard}`}>
-          <p className={styles.chartTitle}>支出分类 · 总支出 ¥{totalExpense.toFixed(2)}</p>
+          <p className={styles.chartTitle}>支出分类
+            {Array.from(totalsByCurrency.entries()).filter(([,v]) => v.expense > 0).map(([cur, v]) =>
+              ` · ${getCurrencySymbol(cur)}${v.expense.toFixed(2)}`).join('')}
+          </p>
           {expensePieData.length > 0 ? (
             <>
               <ResponsiveContainer width="100%" height={220}>
@@ -196,7 +231,10 @@ export default function StatisticsPage() {
           ) : <p className={styles.noData}>暂无支出数据</p>}
         </div>
         <div className={`card ${styles.chartCard}`}>
-          <p className={styles.chartTitle}>收入分类 · 总收入 ¥{totalIncome.toFixed(2)}</p>
+          <p className={styles.chartTitle}>收入分类
+            {Array.from(totalsByCurrency.entries()).filter(([,v]) => v.income > 0).map(([cur, v]) =>
+              ` · ${getCurrencySymbol(cur)}${v.income.toFixed(2)}`).join('')}
+          </p>
           {incomePieData.length > 0 ? (
             <>
               <ResponsiveContainer width="100%" height={220}>
