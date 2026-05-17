@@ -5,7 +5,7 @@ export interface AddExpenseInput {
   category_id: string;
   asset_id: string | null;
   amount: number;
-  currency: 'CNY' | 'EUR';
+  currency: string;
   type: 'expense' | 'income';
   description?: string;
   merchant?: string;

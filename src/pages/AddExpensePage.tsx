@@ -5,7 +5,7 @@ import { useScreenshotAI } from '../hooks/useScreenshotAI';
 import { useVoiceInput } from '../hooks/useVoiceInput';
 import { supabase } from '../config/supabase';
 import type { Currency, TransactionType, AIRecognitionResult } from '../types/expense';
-import { ALL_CURRENCIES, getCurrencySymbol } from '../utils/currencies';
+import { ALL_CURRENCIES } from '../utils/currencies';
 import CategoryPicker from '../components/expense/CategoryPicker';
 import styles from './AddExpensePage.module.css';
 
