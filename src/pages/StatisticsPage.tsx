@@ -205,7 +205,6 @@ export default function StatisticsPage() {
                   {incomePieData.map((_,i)=><Cell key={i} fill={INCOME_COLORS[i%INCOME_COLORS.length]}/>)}
                 </Pie>
                 <Tooltip formatter={(val:any, _:any, entry:any)=>`${getCurrencySymbol(entry.payload.currency)}${Number(val).toFixed(2)}`}/>
-                <text x="50%" y="46%" textAnchor="middle" dominantBaseline="middle" style={{fontSize:12,fill:'var(--text-hint)',fontWeight:500}}>收入</text>
                 {Array.from(incomeByCurrency.entries()).map(([cur,v],i) => (
                   <text key={cur} x="50%" y={`${46+i*7}%`} textAnchor="middle" dominantBaseline="middle"
                     style={{fontSize:14,fill:'var(--text-primary)',fontWeight:700}}>
