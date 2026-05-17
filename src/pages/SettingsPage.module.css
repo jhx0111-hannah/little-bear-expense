@@ -97,11 +97,11 @@
 }
 
 .catSelect {
-  width: 62px;
+  width: 54px;
   flex-shrink: 0;
   border: 1.5px solid #d4ccc4;
   border-radius: var(--radius-sm);
-  padding: 0 4px;
+  padding: 0 2px;
   font-size: 12px;
   background: var(--bg-card);
   color: var(--text-secondary);
@@ -116,8 +116,8 @@
 .catSelect:focus { border-color: var(--color-sage); }
 
 .catInput {
-  width: 80px;
-  flex: none;
+  flex: 1;
+  min-width: 0;
   border: 1.5px solid #d4ccc4;
   border-radius: var(--radius-sm);
   padding: 0 6px;
@@ -131,10 +131,11 @@
 .catInput:focus { border-color: var(--color-sage); }
 
 .catAddBtn {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-md);
-  border: 2px solid var(--color-sage);
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-sage);
   color: var(--color-sage);
   font-size: 20px;
   font-weight: 700;

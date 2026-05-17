@@ -150,7 +150,7 @@ export default function SettingsPage() {
           <input className={styles.catInput} placeholder="名称" value={newCatName}
             onChange={(e) => setNewCatName(e.target.value)} />
           <input className={styles.catInput} placeholder="图标" value={newCatIcon}
-            onChange={(e) => setNewCatIcon(e.target.value)} style={{ width: 48 }} />
+            onChange={(e) => setNewCatIcon(e.target.value)} style={{ maxWidth: 44, textAlign: 'center' }} />
           <button className={styles.catAddBtn} onClick={handleAddCategory}>+</button>
         </div>
         {catMsg && <p className={styles.msg} style={{ marginTop: 8 }}>{catMsg}</p>}
