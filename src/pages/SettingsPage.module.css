@@ -97,19 +97,34 @@
 }
 
 .catSelect {
-  width: 70px;
+  width: 64px;
   flex-shrink: 0;
-  border: 2px solid #d4ccc4;
-  border-radius: var(--radius-md);
-  padding: var(--space-xs) var(--space-sm);
-  font-size: var(--font-size-xs);
+  border: 1.5px solid #d4ccc4;
+  border-radius: var(--radius-sm);
+  padding: 4px 6px;
+  font-size: 12px;
   background: var(--bg-card);
   color: var(--text-secondary);
-  font-weight: 500;
+  font-weight: 400;
   outline: none;
-  min-height: 40px;
+  height: 36px;
+  box-sizing: border-box;
 }
 .catSelect:focus { border-color: var(--color-sage); }
+
+.catInput {
+  flex: 1;
+  border: 1.5px solid #d4ccc4;
+  border-radius: var(--radius-sm);
+  padding: 4px 6px;
+  font-size: 12px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  outline: none;
+  height: 36px;
+  box-sizing: border-box;
+}
+.catInput:focus { border-color: var(--color-sage); }
 
 .catAddBtn {
   width: 40px;

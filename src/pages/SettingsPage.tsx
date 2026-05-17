@@ -122,10 +122,10 @@ export default function SettingsPage() {
             <option value="expense">支出</option>
             <option value="income">收入</option>
           </select>
-          <input className="input" placeholder="分类名称" value={newCatName}
-            onChange={(e) => setNewCatName(e.target.value)} style={{ flex: 1 }} />
-          <input className="input" placeholder="图标" value={newCatIcon}
-            onChange={(e) => setNewCatIcon(e.target.value)} style={{ width: 56, textAlign: 'center', flexShrink: 0 }} />
+          <input className={styles.catInput} placeholder="分类名称" value={newCatName}
+            onChange={(e) => setNewCatName(e.target.value)} />
+          <input className={styles.catInput} placeholder="图标" value={newCatIcon}
+            onChange={(e) => setNewCatIcon(e.target.value)} style={{ width: 48, textAlign: 'center', flexShrink: 0 }} />
           <button className={styles.catAddBtn} onClick={handleAddCategory}>+</button>
         </div>
         {catMsg && <p className={styles.msg} style={{ marginTop: 8 }}>{catMsg}</p>}
