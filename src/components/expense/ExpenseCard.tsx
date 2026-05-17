@@ -1,6 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
 import type { Expense } from '../../types/expense';
-import CategoryIcon from '../common/CategoryIcon';
 import styles from './ExpenseCard.module.css';
 
 interface Props {
@@ -54,7 +53,7 @@ export default function ExpenseCard({ expense, onClick, onDelete }: Props) {
         role="button"
         tabIndex={0}
       >
-        <CategoryIcon name={expense.category?.name || '其他支出'} size={36} />
+        <span className={styles.icon}>{expense.category?.icon || '📦'}</span>
         <div className={styles.info}>
           <p className={styles.name}>{expense.category?.name || expense.description || '未分类'}</p>
           {expense.merchant && <p className={styles.merchant}>{expense.merchant}</p>}

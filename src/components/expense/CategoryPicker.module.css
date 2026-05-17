@@ -15,7 +15,7 @@
   background: var(--bg-card);
   transition: border-color var(--transition-fast),
               background var(--transition-fast);
-  min-height: 72px;
+  min-height: 64px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
@@ -27,6 +27,11 @@
 .selected {
   border-color: var(--color-sage);
   background: rgba(181, 196, 177, 0.12);
+}
+
+.icon {
+  font-size: 26px;
+  line-height: 1;
 }
 
 .name {

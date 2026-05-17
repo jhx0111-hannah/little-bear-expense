@@ -53,6 +53,13 @@
   background: #f5f0eb;
 }
 
+.icon {
+  font-size: 28px;
+  flex-shrink: 0;
+  width: 42px;
+  text-align: center;
+}
+
 .info {
   flex: 1;
   min-width: 0;
