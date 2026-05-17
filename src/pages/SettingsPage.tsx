@@ -4,14 +4,17 @@ import { useExpenses } from '../hooks/useExpenses';
 import { supabase } from '../config/supabase';
 import styles from './SettingsPage.module.css';
 
+const DEFAULT_CURRENCIES = ['CNY', 'EUR'];
+
 export default function SettingsPage() {
   const { user, signOut } = useAuth();
   const { categories, assets, expenses, loadInitial } = useExpenses();
   const [nickname, setNickname] = useState('小熊用户');
-  const [budget, setBudget] = useState('');
-  const [baseCurrency, setBaseCurrency] = useState<'CNY' | 'EUR'>('CNY');
+  const [baseCurrency, setBaseCurrency] = useState('CNY');
+  const [customCurrencies, setCustomCurrencies] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState('');
+  const [newCur, setNewCur] = useState('');
 
   // 自定义分类
   const [newCatName, setNewCatName] = useState('');
@@ -27,7 +30,7 @@ export default function SettingsPage() {
     if (data) {
       setNickname(data.display_name || '小熊用户');
       setBaseCurrency(data.base_currency || 'CNY');
-      if (data.monthly_budget) setBudget(String(data.monthly_budget));
+      setCustomCurrencies(data.custom_currencies || []);
     }
   };
 
@@ -35,8 +38,9 @@ export default function SettingsPage() {
     if (!user) return;
     setSaving(true);
     const { error } = await supabase.from('profiles').update({
-      display_name: nickname, base_currency: baseCurrency,
-      monthly_budget: budget ? parseFloat(budget) : null,
+      display_name: nickname,
+      base_currency: baseCurrency,
+      custom_currencies: customCurrencies,
       updated_at: new Date().toISOString(),
     }).eq('id', user.id);
     setSaving(false);
@@ -44,29 +48,37 @@ export default function SettingsPage() {
     else { setMsg('✅ 已保存'); setTimeout(() => setMsg(''), 2000); }
   };
 
+  const addCurrency = () => {
+    const code = newCur.trim().toUpperCase();
+    if (!code || code.length !== 3) { setMsg('请输入3位货币代码，如 GBP、KRW'); return; }
+    const all = [...DEFAULT_CURRENCIES, ...customCurrencies];
+    if (all.includes(code)) { setMsg('该货币已存在'); return; }
+    setCustomCurrencies([...customCurrencies, code]);
+    setNewCur('');
+    setMsg('');
+  };
+
+  const removeCurrency = (code: string) => {
+    setCustomCurrencies(customCurrencies.filter((c) => c !== code));
+  };
+
+  const allCurrencies = [...DEFAULT_CURRENCIES, ...customCurrencies];
+
   const handleAddCategory = async () => {
     if (!user || !newCatName.trim()) { setCatMsg('请输入分类名称'); return; }
-    // 检查是否已存在
     const exists = categories.some((c) => c.name === newCatName.trim() && c.type === newCatType);
     if (exists) { setCatMsg('⚠️ 该分类已存在'); return; }
     const { error } = await supabase.from('categories').insert({
       user_id: user.id, name: newCatName.trim(), icon: newCatIcon,
       color: '#b5a9b0', type: newCatType, sort_order: 99,
     });
-    if (error) {
-      if (error.message.includes('duplicate')) { setCatMsg('⚠️ 该分类已存在'); }
-      else { setCatMsg('添加失败：' + error.message); }
-      return;
-    }
-    setNewCatName('');
-    setNewCatIcon('📦');
-    setCatMsg('✅ 已添加');
-    setTimeout(() => setCatMsg(''), 2000);
-    loadInitial();
+    if (error) { setCatMsg(error.message.includes('duplicate') ? '⚠️ 该分类已存在' : '添加失败'); return; }
+    setNewCatName(''); setNewCatIcon('📦'); setCatMsg('✅ 已添加');
+    setTimeout(() => setCatMsg(''), 2000); loadInitial();
   };
 
   const handleDeleteCategory = async (catId: string) => {
-    if (!user || !confirm('确定删除这个分类吗？（已有记录不受影响）')) return;
+    if (!user || !confirm('确定删除？')) return;
     await supabase.from('categories').delete().eq('id', catId).eq('user_id', user.id);
     loadInitial();
   };
@@ -78,11 +90,10 @@ export default function SettingsPage() {
       const a = assets.find((x) => x.id === e.asset_id);
       return [e.expense_date, e.type, cat?.name || '', e.amount, e.currency, e.merchant || '', e.description || '', a?.name || ''].join(',');
     }).join('\n');
-    const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
+    const blob = new Blob([header + rows], { type: 'text/csv' });
     const a = document.createElement('a');
-    a.href = url; a.download = `小熊记账_${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click(); URL.revokeObjectURL(url);
+    a.href = URL.createObjectURL(blob); a.download = `小熊记账_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click(); URL.revokeObjectURL(a.href);
   };
 
   const expenseCats = categories.filter((c) => c.type === 'expense');
@@ -98,16 +109,30 @@ export default function SettingsPage() {
           <input className="input" value={nickname} onChange={(e) => setNickname(e.target.value)} /></div>
         <div className={styles.field}><label>邮箱</label>
           <p className={styles.email}>{user?.email || '未知'}</p></div>
-        <div className={styles.field}><label>默认货币</label>
-          <div className={styles.toggle}>
-            <button className={`${styles.toggleBtn} ${baseCurrency === 'CNY' ? styles.toggleActive : ''}`}
-              onClick={() => setBaseCurrency('CNY')}>¥ 人民币</button>
-            <button className={`${styles.toggleBtn} ${baseCurrency === 'EUR' ? styles.toggleActive : ''}`}
-              onClick={() => setBaseCurrency('EUR')}>€ 欧元</button>
-          </div></div>
-        <div className={styles.field}><label>月预算 ({baseCurrency})</label>
-          <input className="input" type="number" placeholder="不限制" value={budget}
-            onChange={(e) => setBudget(e.target.value)} /></div>
+
+        {/* 货币管理 */}
+        <div className={styles.field}>
+          <label>默认货币</label>
+          <div className={styles.currencyRow}>
+            {allCurrencies.map((c) => (
+              <button key={c}
+                className={`${styles.currencyChip} ${baseCurrency === c ? styles.currencyChipActive : ''}`}
+                onClick={() => setBaseCurrency(c)}>
+                {c}
+                {!DEFAULT_CURRENCIES.includes(c) && (
+                  <span className={styles.currencyDel} onClick={(e) => { e.stopPropagation(); removeCurrency(c); }}>×</span>
+                )}
+              </button>
+            ))}
+            <div className={styles.currencyAdd}>
+              <input className={styles.currencyAddInput} placeholder="+添加" value={newCur}
+                onChange={(e) => setNewCur(e.target.value.toUpperCase())}
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addCurrency(); } }} />
+              <button className={styles.currencyAddBtn} onClick={addCurrency}>+</button>
+            </div>
+          </div>
+        </div>
+
         {msg && <p className={styles.msg}>{msg}</p>}
         <button className={`btn-primary ${styles.saveBtn}`} onClick={saveProfile} disabled={saving}>
           {saving ? '保存中...' : '保存设置'}</button>
@@ -122,10 +147,10 @@ export default function SettingsPage() {
             <option value="expense">支出</option>
             <option value="income">收入</option>
           </select>
-          <input className={styles.catInput} placeholder="分类名称" value={newCatName}
+          <input className={styles.catInput} placeholder="名称" value={newCatName}
             onChange={(e) => setNewCatName(e.target.value)} />
           <input className={styles.catInput} placeholder="图标" value={newCatIcon}
-            onChange={(e) => setNewCatIcon(e.target.value)} style={{ width: 48, textAlign: 'center', flexShrink: 0 }} />
+            onChange={(e) => setNewCatIcon(e.target.value)} style={{ width: 48 }} />
           <button className={styles.catAddBtn} onClick={handleAddCategory}>+</button>
         </div>
         {catMsg && <p className={styles.msg} style={{ marginTop: 8 }}>{catMsg}</p>}
@@ -134,10 +159,8 @@ export default function SettingsPage() {
           <p style={{ fontSize: 12, color: 'var(--text-hint)', marginBottom: 4 }}>支出分类：</p>
           <div className={styles.catList}>
             {expenseCats.map((c) => (
-              <span key={c.id} className={styles.catTag}>
-                {c.icon} {c.name}
-                <button className={styles.catDel} onClick={() => handleDeleteCategory(c.id)}>×</button>
-              </span>
+              <span key={c.id} className={styles.catTag}>{c.icon} {c.name}
+                <button className={styles.catDel} onClick={() => handleDeleteCategory(c.id)}>×</button></span>
             ))}
           </div>
         </div>
@@ -145,10 +168,8 @@ export default function SettingsPage() {
           <p style={{ fontSize: 12, color: 'var(--text-hint)', marginBottom: 4 }}>收入分类：</p>
           <div className={styles.catList}>
             {incomeCats.map((c) => (
-              <span key={c.id} className={styles.catTag}>
-                {c.icon} {c.name}
-                <button className={styles.catDel} onClick={() => handleDeleteCategory(c.id)}>×</button>
-              </span>
+              <span key={c.id} className={styles.catTag}>{c.icon} {c.name}
+                <button className={styles.catDel} onClick={() => handleDeleteCategory(c.id)}>×</button></span>
             ))}
           </div>
         </div>
