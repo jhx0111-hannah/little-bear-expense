@@ -10,7 +10,7 @@ import styles from './AddAssetPage.module.css';
 export default function AddAssetPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { refreshAssets } = useExpenses();
+  const { currencies, refreshAssets } = useExpenses();
 
   const [name, setName] = useState('');
   const [currency, setCurrency] = useState<Currency>('CNY');
@@ -72,11 +72,11 @@ export default function AddAssetPage() {
         <div className={styles.field}>
           <label className={styles.label}>币种</label>
           <div className={styles.typeRow}>
-            {(['CNY', 'EUR'] as Currency[]).map((c) => (
+            {currencies.map((c) => (
               <button key={c} type="button"
                 className={`${styles.typeBtn} ${currency === c ? styles.typeBtnActive : ''}`}
                 onClick={() => setCurrency(c)}>
-                {c === 'CNY' ? '¥ 人民币' : '€ 欧元'}
+                {c}
               </button>
             ))}
           </div>

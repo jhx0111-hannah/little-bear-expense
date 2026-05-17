@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useExpenses } from '../hooks/useExpenses';
 import BearIcon from '../components/common/BearIcon';
@@ -25,10 +25,34 @@ export default function DashboardPage() {
   const weekDay = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][today.getDay()];
   const dateStr = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日 · ${weekDay}`;
 
-  const eurAssets = assets.filter((a) => a.is_active && a.currency === 'EUR');
-  const cnyAssets = assets.filter((a) => a.is_active && a.currency === 'CNY');
-  const totalEur = eurAssets.reduce((s, a) => s + Number(a.balance), 0);
-  const totalCny = cnyAssets.reduce((s, a) => s + Number(a.balance), 0);
+  // 按币种分组（先 EUR 再 CNY 再其他）
+  const groupedAssets = useMemo(() => {
+    const active = assets.filter((a) => a.is_active);
+    const order = ['EUR', 'CNY'];
+    const groups: { currency: string; list: Asset[]; total: number }[] = [];
+    const seen = new Set<string>();
+    order.forEach((c) => {
+      const list = active.filter((a) => a.currency === c);
+      if (list.length > 0) {
+        groups.push({ currency: c, list, total: list.reduce((s, a) => s + Number(a.balance), 0) });
+        list.forEach((a) => seen.add(a.id));
+      }
+    });
+    // 其他币种
+    const rest = active.filter((a) => !seen.has(a.id));
+    const restByCur = new Map<string, Asset[]>();
+    rest.forEach((a) => {
+      const list = restByCur.get(a.currency) || [];
+      list.push(a);
+      restByCur.set(a.currency, list);
+    });
+    restByCur.forEach((list, currency) => {
+      groups.push({ currency, list, total: list.reduce((s, a) => s + Number(a.balance), 0) });
+    });
+    return groups;
+  }, [assets]);
+
+  const currencySymbol = (c: string) => c === 'CNY' ? '¥' : c === 'EUR' ? '€' : c;
 
   return (
     <div className={styles.page}>
@@ -53,49 +77,28 @@ export default function DashboardPage() {
           <>
             {/* 总额 */}
             <div className={styles.totalRow}>
-              {eurAssets.length > 0 && (
-                <div className={styles.totalItem}>
-                  <p className={styles.totalLabel}>€ 欧元</p>
-                  <p className={styles.totalValue}>€{totalEur.toFixed(2)}</p>
+              {groupedAssets.map((g) => (
+                <div key={g.currency} className={styles.totalItem}>
+                  <p className={styles.totalLabel}>{currencySymbol(g.currency)} {g.currency}</p>
+                  <p className={styles.totalValue}>{currencySymbol(g.currency)}{g.total.toFixed(2)}</p>
                 </div>
-              )}
-              {cnyAssets.length > 0 && (
-                <div className={styles.totalItem}>
-                  <p className={styles.totalLabel}>¥ 人民币</p>
-                  <p className={styles.totalValue}>¥{totalCny.toFixed(2)}</p>
-                </div>
-              )}
+              ))}
             </div>
 
-            {/* EUR 账户列表 */}
-            {eurAssets.length > 0 && (
-              <div className={styles.assetGroup}>
-                <p className={styles.currencyLabel}>欧元账户</p>
-                {eurAssets.map((a) => (
+            {/* 各币种账户列表 */}
+            {groupedAssets.map((g) => (
+              <div key={g.currency} className={styles.assetGroup}>
+                <p className={styles.currencyLabel}>{g.currency} 账户</p>
+                {g.list.map((a) => (
                   <div key={a.id} className={styles.accountRow}
                     onClick={() => setEditingAsset(a)}>
                     <span className={styles.accountIcon}>{a.icon}</span>
                     <span className={styles.accountName}>{a.name}</span>
-                    <span className={styles.accountBalance}>€{Number(a.balance).toFixed(2)}</span>
+                    <span className={styles.accountBalance}>{currencySymbol(a.currency)}{Number(a.balance).toFixed(2)}</span>
                   </div>
                 ))}
               </div>
-            )}
-
-            {/* CNY 账户列表 */}
-            {cnyAssets.length > 0 && (
-              <div className={styles.assetGroup}>
-                <p className={styles.currencyLabel}>人民币账户</p>
-                {cnyAssets.map((a) => (
-                  <div key={a.id} className={styles.accountRow}
-                    onClick={() => setEditingAsset(a)}>
-                    <span className={styles.accountIcon}>{a.icon}</span>
-                    <span className={styles.accountName}>{a.name}</span>
-                    <span className={styles.accountBalance}>¥{Number(a.balance).toFixed(2)}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+            ))}
           </>
         )}
       </div>

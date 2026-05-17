@@ -106,6 +106,22 @@
   color: white;
 }
 
+.currencySelect {
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-sage);
+  color: var(--color-sage);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  min-height: 40px;
+  background: transparent;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  text-align: center;
+  cursor: pointer;
+}
+
 /* 区块 */
 .section {
   margin-bottom: var(--space-lg);

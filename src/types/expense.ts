@@ -3,8 +3,11 @@ import type { Asset } from './asset';
 /** 分类类型 */
 export type CategoryType = 'expense' | 'income';
 
-/** 货币类型 */
-export type Currency = 'CNY' | 'EUR';
+/** 货币类型（动态，默认 CNY/EUR + 自定义） */
+export type Currency = string;
+
+/** 默认货币列表 */
+export const BASE_CURRENCIES = ['CNY', 'EUR'];
 
 /** 交易类型 */
 export type TransactionType = 'expense' | 'income';

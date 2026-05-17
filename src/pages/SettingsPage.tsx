@@ -8,9 +8,8 @@ const DEFAULT_CURRENCIES = ['CNY', 'EUR'];
 
 export default function SettingsPage() {
   const { user, signOut } = useAuth();
-  const { categories, assets, expenses, loadInitial } = useExpenses();
+  const { categories, assets, expenses, currencies, loadInitial } = useExpenses();
   const [nickname, setNickname] = useState('小熊用户');
-  const [baseCurrency, setBaseCurrency] = useState('CNY');
   const [customCurrencies, setCustomCurrencies] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState('');
@@ -29,7 +28,6 @@ export default function SettingsPage() {
     const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single();
     if (data) {
       setNickname(data.display_name || '小熊用户');
-      setBaseCurrency(data.base_currency || 'CNY');
       setCustomCurrencies(data.custom_currencies || []);
     }
   };
@@ -39,7 +37,6 @@ export default function SettingsPage() {
     setSaving(true);
     const { error } = await supabase.from('profiles').update({
       display_name: nickname,
-      base_currency: baseCurrency,
       custom_currencies: customCurrencies,
       updated_at: new Date().toISOString(),
     }).eq('id', user.id);
@@ -61,8 +58,6 @@ export default function SettingsPage() {
   const removeCurrency = (code: string) => {
     setCustomCurrencies(customCurrencies.filter((c) => c !== code));
   };
-
-  const allCurrencies = [...DEFAULT_CURRENCIES, ...customCurrencies];
 
   const handleAddCategory = async () => {
     if (!user || !newCatName.trim()) { setCatMsg('请输入分类名称'); return; }
@@ -110,19 +105,17 @@ export default function SettingsPage() {
         <div className={styles.field}><label>邮箱</label>
           <p className={styles.email}>{user?.email || '未知'}</p></div>
 
-        {/* 货币管理 */}
+        {/* 币种管理 */}
         <div className={styles.field}>
-          <label>默认货币</label>
+          <label>支持的币种</label>
           <div className={styles.currencyRow}>
-            {allCurrencies.map((c) => (
-              <button key={c}
-                className={`${styles.currencyChip} ${baseCurrency === c ? styles.currencyChipActive : ''}`}
-                onClick={() => setBaseCurrency(c)}>
+            {currencies.map((c) => (
+              <span key={c} className={styles.currencyChip}>
                 {c}
                 {!DEFAULT_CURRENCIES.includes(c) && (
-                  <span className={styles.currencyDel} onClick={(e) => { e.stopPropagation(); removeCurrency(c); }}>×</span>
+                  <button className={styles.currencyDel} onClick={() => removeCurrency(c)}>×</button>
                 )}
-              </button>
+              </span>
             ))}
             <div className={styles.currencyAdd}>
               <input className={styles.currencyAddInput} placeholder="+添加" value={newCur}

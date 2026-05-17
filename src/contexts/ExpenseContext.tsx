@@ -1,6 +1,7 @@
 import { createContext, useState, useCallback, type ReactNode } from 'react';
 import type { Expense, Category } from '../types/expense';
 import type { Asset } from '../types/asset';
+import { supabase } from '../config/supabase';
 import { useAuth } from '../hooks/useAuth';
 import * as expensesApi from '../services/api/expenses';
 import * as categoriesApi from '../services/api/categories';
@@ -10,6 +11,7 @@ interface ExpenseState {
   expenses: Expense[];
   categories: Category[];
   assets: Asset[];
+  currencies: string[];
   loading: boolean;
   loadMonthData: (year: number, month: number) => Promise<void>;
   loadInitial: () => Promise<void>;
@@ -24,11 +26,17 @@ export function ExpenseProvider({ children }: { children: ReactNode }) {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [assets, setAssets] = useState<Asset[]>([]);
+  const [currencies, setCurrencies] = useState<string[]>(['CNY', 'EUR']);
   const [loading, setLoading] = useState(false);
 
   const loadInitial = useCallback(async () => {
     if (!user) return;
     setLoading(true);
+
+    // 加载用户币种
+    const { data: profile } = await supabase.from('profiles').select('custom_currencies').eq('id', user.id).single();
+    const custom = profile?.custom_currencies || [];
+    setCurrencies(['CNY', 'EUR', ...custom]);
 
     await categoriesApi.seedDefaultCategories(user.id);
     const [cats, assetList, recent] = await Promise.all([
@@ -83,7 +91,7 @@ export function ExpenseProvider({ children }: { children: ReactNode }) {
 
   return (
     <ExpenseContext.Provider value={{
-      expenses, categories, assets, loading,
+      expenses, categories, assets, currencies, loading,
       loadMonthData, loadInitial, addExpense, refreshAssets,
     }}>
       {children}

@@ -10,7 +10,7 @@ import styles from './AddExpensePage.module.css';
 
 export default function AddExpensePage() {
   const navigate = useNavigate();
-  const { categories, assets, addExpense, loadInitial } = useExpenses();
+  const { categories, assets, currencies, addExpense, loadInitial } = useExpenses();
   const screenshotAI = useScreenshotAI();
   const voice = useVoiceInput();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -187,8 +187,10 @@ export default function AddExpensePage() {
               step="0.01" min="0"
             />
           </div>
-          <button type="button" className={styles.currencyBtn}
-            onClick={() => setCurrency(currency === 'CNY' ? 'EUR' : 'CNY')}>{currency}</button>
+          <select className={styles.currencySelect} value={currency}
+            onChange={(e) => setCurrency(e.target.value)}>
+            {currencies.map((c) => <option key={c} value={c}>{c}</option>)}
+          </select>
         </div>
 
         <div className={styles.section}>
