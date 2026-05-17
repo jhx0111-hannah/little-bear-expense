@@ -166,13 +166,25 @@ export default function StatisticsPage() {
       {loading ? <p className={styles.loading}>加载中...</p>
       : expenses.length===0 ? <p className={styles.empty}>该时间段暂无记录</p>
       : <>
+        {/* 汇总卡片 */}
+        <div className={`card ${styles.chartCard}`}>
+          <div className={styles.summaryRow}>
+            <span className={styles.summaryType}>支出</span>
+            {Array.from(expenseByCurrency.entries()).map(([cur, v]) => (
+              <span key={cur} className={styles.summaryValue}>{getCurrencySymbol(cur)}{v.toFixed(2)}</span>
+            ))}
+          </div>
+          <div className={styles.summaryRow}>
+            <span className={styles.summaryType}>收入</span>
+            {Array.from(incomeByCurrency.entries()).map(([cur, v]) => (
+              <span key={cur} className={styles.summaryValue}>{getCurrencySymbol(cur)}{v.toFixed(2)}</span>
+            ))}
+          </div>
+        </div>
+
         {/* 支出饼图 */}
         <div className={`card ${styles.chartCard}`}>
-          <p className={styles.chartTitle}>
-            {'支出分类  '}
-            {Array.from(expenseByCurrency.entries()).map(([cur, v]) =>
-              `${getCurrencySymbol(cur)}${v.toFixed(2)} `).join('')}
-          </p>
+          <p className={styles.chartTitle}>支出分类</p>
           {expensePieData.length>0 ? <>
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -195,11 +207,7 @@ export default function StatisticsPage() {
 
         {/* 收入饼图 */}
         <div className={`card ${styles.chartCard}`}>
-          <p className={styles.chartTitle}>
-            {'收入分类  '}
-            {Array.from(incomeByCurrency.entries()).map(([cur, v]) =>
-              `${getCurrencySymbol(cur)}${v.toFixed(2)} `).join('')}
-          </p>
+          <p className={styles.chartTitle}>收入分类</p>
           {incomePieData.length>0 ? <>
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>

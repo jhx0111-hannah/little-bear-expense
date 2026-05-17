@@ -68,6 +68,28 @@
   text-align: center;
 }
 
+/* 汇总卡片 */
+.summaryRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xs) 0;
+}
+
+.summaryType {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--text-primary);
+  min-width: 48px;
+}
+
+.summaryValue {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
 /* 图表卡片 */
 .chartCard {
   margin-bottom: var(--space-md);
